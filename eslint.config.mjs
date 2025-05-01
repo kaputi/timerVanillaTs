@@ -12,6 +12,20 @@ export default tseslint.config(
       // 'no-unused-vars': ['error', { varsIgnorePattern: '^_', argsIgnorePattern: '^_' }],
       // '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '^_' }],
       '@typescript-eslint/prefer-for-of': 'off',
+      '@typescript-eslint/explicit-function-return-type': 'error',
+      '@typescript-eslint/explicit-member-accessibility': [
+        'error',
+        {
+          accessibility: 'explicit',
+          overrides: {
+            accessors: 'off',
+            constructors: 'off',
+            methods: 'explicit',
+            properties: 'explicit',
+            parameterProperties: 'explicit',
+          },
+        },
+      ],
     },
   }
 );
