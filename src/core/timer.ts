@@ -19,14 +19,15 @@ export class Timer {
   private startTime = 0;
   private startPauseTime = 0;
   private intervalDeltaTime = 0;
+  private intervals: IInterval[] = [];
 
-  constructor(private intervals: IInterval[]) {
-    if (intervals.length === 0) {
-      throw new Error('Intervals cannot be empty');
-    }
+  constructor(intervals?: IInterval[]) {
+    if (intervals) this.intervals = intervals;
   }
 
   public start(): void {
+    if (this.intervals.length === 0) return;
+
     if (this.status === TimerStatus.RUNNING || this.status === TimerStatus.FINISHED) return;
 
     if (this.status === TimerStatus.PAUSED) {
@@ -74,5 +75,10 @@ export class Timer {
       currentInterval: this.currentInterval,
       intervalDeltaTime: this.intervalDeltaTime,
     };
+  }
+
+  public setIntervals(intervals: IInterval[]): void {
+    if (this.status !== TimerStatus.STOPPED) return;
+    this.intervals = intervals;
   }
 }

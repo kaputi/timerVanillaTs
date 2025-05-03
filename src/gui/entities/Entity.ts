@@ -1,6 +1,6 @@
 import { generateUID } from '@/core/generateUid';
 
-enum InteractionType {
+export enum InteractionType {
   mouseDown = 'mouseDown',
   mouseUp = 'mouseUp',
   mouseIn = 'mouseIn',
@@ -27,6 +27,15 @@ export abstract class Entity {
   protected mouseDown = false;
   protected mouseIn = false;
 
+  get geometry(): { width: number; height: number; x: number; y: number } {
+    return {
+      x: this.origin.x,
+      y: this.origin.y,
+      width: this.width,
+      height: this.height,
+    };
+  }
+
   constructor(
     public readonly name: string,
     { origin, width, height }: EntityProps
@@ -37,8 +46,6 @@ export abstract class Entity {
   }
 
   public pick({ x, y }: Coord): boolean {
-    if (this.interactions.size === 0) return false;
-
     const {
       origin: { x: originX, y: originY },
       width,
@@ -85,6 +92,13 @@ export abstract class Entity {
     this.mouseIn = false;
   }
 
-  public abstract update(delta: number): void;
+  public addInteraction(type: InteractionType, callback: (coord?: Coord) => void): void {
+    if (!this.interactions.has(type)) {
+      this.interactions.set(type, new Set());
+    }
+    this.interactions.get(type)?.add(callback);
+  }
+
+  public abstract update(deltaTime: number): void;
   public abstract draw(ctx: CanvasRenderingContext2D): void;
 }

@@ -24,10 +24,11 @@ export class Scene {
       left: '0 px',
       width: '100%',
       height: '100%',
-      zIndex: '9999',
+      zIndex: '0',
     };
 
     applyCss(this.canvas, canvasStyles);
+    this.resize();
     document.body.appendChild(this.canvas);
   }
 
@@ -46,7 +47,9 @@ export class Scene {
   }
 
   public deactivate(): void {
-    // TODO: Implement activation logic, for example, if mouse is on top of entity, set it as hovered
+    this.entities.forEach((entity) => {
+      entity.resetInteractions();
+    });
   }
 
   private pick(coord: Coord): Entity | null {
@@ -76,6 +79,21 @@ export class Scene {
 
     if (entity && entity === this.mouseDown) {
       entity.onDrag(coord);
+    }
+  }
+
+  public draw(): void {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    for (let i = this.entities.length - 1; i >= 0; i--) {
+      const entity = this.entities[i];
+      entity.draw(this.ctx);
+    }
+  }
+
+  public update(delta: number): void {
+    for (let i = this.entities.length - 1; i >= 0; i--) {
+      const entity = this.entities[i];
+      entity.update(delta);
     }
   }
 }

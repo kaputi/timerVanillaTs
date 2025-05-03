@@ -16,9 +16,9 @@ interface ButtonProps {
   bgColor?: string;
   pressedBgColor?: string;
   hoverBgColor?: string;
-  edgeColor?: string;
-  pressedEdgeColor?: string;
-  hoeverEdgeColor?: string;
+  borderColor?: string;
+  pressedBorderColor?: string;
+  hoeverBorderColor?: string;
   opacity?: number;
 }
 
@@ -37,13 +37,10 @@ export class Button extends Entity {
   public bgColor: string;
   public bgPressedColor: string;
   public bgHoverColor: string;
-  public edgeColor: string;
-  public pressedEdgeColor: string;
-  public hoeverEdgeColor: string;
+  public borderColor: string;
+  public pressedBorderColor: string;
+  public hoeverBorderColor: string;
   public opacity: number;
-
-  private isHover = false;
-  private isPressed = false;
 
   constructor(
     public readonly name: string,
@@ -61,9 +58,9 @@ export class Button extends Entity {
       bgColor,
       pressedBgColor,
       hoverBgColor,
-      edgeColor,
-      pressedEdgeColor,
-      hoeverEdgeColor,
+      borderColor,
+      pressedBorderColor,
+      hoeverBorderColor,
       opacity,
     }: ButtonProps
   ) {
@@ -91,30 +88,14 @@ export class Button extends Entity {
     this.bgColor = bgColor || '#fff';
     this.bgPressedColor = pressedBgColor || '#fff';
     this.bgHoverColor = hoverBgColor || '#fff';
-    this.edgeColor = edgeColor || '#000';
-    this.pressedEdgeColor = pressedEdgeColor || '#000';
-    this.hoeverEdgeColor = hoeverEdgeColor || '#000';
+    this.borderColor = borderColor || '#000';
+    this.pressedBorderColor = pressedBorderColor || '#000';
+    this.hoeverBorderColor = hoeverBorderColor || '#000';
     this.opacity = opacity || 1;
   }
 
-  public hover(): void {
-    this.isHover = true;
-  }
-
-  public unhover(): void {
-    this.isHover = false;
-  }
-
-  public press(): void {
-    this.isPressed = true;
-  }
-
-  public release(): void {
-    this.isPressed = false;
-  }
-
-  public update(delta: number): void {
-    console.log(delta);
+  public update(_deltaTime: number): void {
+    // console.log(deltaTime);
   }
 
   public draw(ctx: CanvasRenderingContext2D): void {
@@ -123,28 +104,31 @@ export class Button extends Entity {
 
     ctx.globalAlpha = this.opacity;
 
+    // TODO: use text from utils
+
     // BOX
     if (cornerRadius) rect(ctx, { x, y, width, height });
     else roundCornerRect(ctx, { x, y, width, height, radius: cornerRadius });
-    ctx.fillStyle = this.isPressed
+    ctx.fillStyle = this.mouseDown
       ? this.bgPressedColor
-      : this.isHover
+      : this.mouseIn
         ? this.bgHoverColor
         : this.bgColor;
-    ctx.strokeStyle = this.isPressed
-      ? this.pressedEdgeColor
-      : this.isHover
-        ? this.hoeverEdgeColor
-        : this.edgeColor;
+    ctx.strokeStyle = this.mouseDown
+      ? this.pressedBorderColor
+      : this.mouseIn
+        ? this.hoeverBorderColor
+        : this.borderColor;
     ctx.fill();
     ctx.stroke();
 
     // TEXT
+    ctx.font = this.font;
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'center';
-    ctx.fillStyle = this.isPressed
+    ctx.fillStyle = this.mouseDown
       ? this.pressedColor
-      : this.isHover
+      : this.mouseIn
         ? this.hoverColor
         : this.color;
     ctx.fillText(this.text, x + width / 2, y + height / 2);

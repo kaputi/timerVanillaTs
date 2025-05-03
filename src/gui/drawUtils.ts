@@ -34,3 +34,34 @@ export const rect = (ctx: CanvasRenderingContext2D, { x, y, width, height }: Rec
   ctx.rect(x, y, width, height);
   ctx.closePath();
 };
+
+interface TextProps {
+  text: string;
+  x: number;
+  y: number;
+  color?: string;
+  fontFamily?: string;
+  fontSize?: number;
+  fontWeight?: string;
+  padding?: number;
+}
+
+export const text = (
+  ctx: CanvasRenderingContext2D,
+  { text, x, y, color, fontSize, fontFamily, fontWeight, padding }: TextProps
+): void => {
+  color = color || '#000';
+  fontSize = fontSize || 12;
+  fontFamily = fontFamily || 'Arial';
+  fontWeight = fontWeight || 'normal';
+  padding = padding || 0;
+
+  const font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+  ctx.font = font;
+  ctx.fillStyle = color;
+
+  ctx.textBaseline = 'top';
+  ctx.textAlign = 'left';
+
+  ctx.fillText(text, x + padding, y + padding);
+};
