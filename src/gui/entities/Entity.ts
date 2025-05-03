@@ -1,5 +1,13 @@
 import { generateUID } from '@/core/generateUid';
 
+enum InteractionType {
+  mouseDown = 'mouseDown',
+  mouseUp = 'mouseUp',
+  mouseIn = 'mouseIn',
+  mouseOut = 'mouseOut',
+  drag = 'drag',
+}
+
 export interface EntityProps {
   width: number;
   height: number;
@@ -14,7 +22,10 @@ export abstract class Entity {
   protected width: number;
   protected height: number;
 
-  protected pickable = false;
+  protected interactions = new Map<InteractionType, Set<(coord?: Coord) => void>>();
+
+  protected mouseDown = false;
+  protected mouseIn = false;
 
   constructor(
     public readonly name: string,
@@ -25,8 +36,8 @@ export abstract class Entity {
     if (origin) this.origin = origin;
   }
 
-  public pickObject({ x, y }: Coord): boolean {
-    if (!this.pickable) return false;
+  public pick({ x, y }: Coord): boolean {
+    if (this.interactions.size === 0) return false;
 
     const {
       origin: { x: originX, y: originY },
@@ -36,7 +47,44 @@ export abstract class Entity {
     return x >= originX && x <= originX + width && y >= originY && y <= originY + height;
   }
 
-  public abstract update(delta: number): void;
+  public resetInteractions(): void {
+    this.mouseDown = false;
+    this.mouseIn = false;
+  }
 
+  private doInteraction(type: InteractionType, coord?: Coord): void {
+    const interaction = this.interactions.get(type);
+    if (interaction) {
+      interaction.forEach((callback) => {
+        callback(coord);
+      });
+    }
+  }
+
+  public onMouseDown(): void {
+    this.mouseDown = true;
+    this.doInteraction(InteractionType.mouseDown);
+  }
+
+  public onMouseUp(): void {
+    this.mouseDown = false;
+    this.doInteraction(InteractionType.mouseUp);
+  }
+
+  public onDrag(coord: Coord): void {
+    this.doInteraction(InteractionType.drag, coord);
+  }
+
+  public hover(): void {
+    this.doInteraction(InteractionType.mouseIn);
+    this.mouseIn = true;
+  }
+
+  public unhover(): void {
+    this.doInteraction(InteractionType.mouseOut);
+    this.mouseIn = false;
+  }
+
+  public abstract update(delta: number): void;
   public abstract draw(ctx: CanvasRenderingContext2D): void;
 }

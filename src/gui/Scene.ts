@@ -7,6 +7,9 @@ export class Scene {
 
   private entities: Entity[] = [];
 
+  private mouseDown: Entity | null = null;
+  private hovered: Entity | null = null;
+
   constructor(public readonly name: string) {
     this.canvas = document.createElement('canvas');
     const ctx = this.canvas.getContext('2d');
@@ -26,15 +29,9 @@ export class Scene {
 
     applyCss(this.canvas, canvasStyles);
     document.body.appendChild(this.canvas);
-
-    this.resize();
-
-    window.addEventListener('resize', () => {
-      this.resize();
-    });
   }
 
-  private resize(): void {
+  public resize(): void {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
   }
@@ -49,9 +46,36 @@ export class Scene {
   }
 
   public deactivate(): void {
-    this.entities.forEach((entity) => {
-      entity.mouseIn = false;
-      entity.mouseDown = false;
-    });
+    // TODO: Implement activation logic, for example, if mouse is on top of entity, set it as hovered
+  }
+
+  private pick(coord: Coord): Entity | null {
+    const entity = this.entities.find((entity) => entity.pick(coord));
+    return entity || null;
+  }
+
+  public onMouseDown(coord: Coord): void {
+    const entity = this.pick(coord);
+    if (entity) entity.onMouseDown();
+    this.mouseDown = entity;
+  }
+
+  public onMouseUp(coord: Coord): void {
+    const entity = this.pick(coord);
+    if (this.mouseDown && this.mouseDown === entity) this.mouseDown.onMouseUp();
+    this.mouseDown = null;
+  }
+
+  public onMouseMove(coord: Coord): void {
+    const entity = this.pick(coord);
+
+    if (this.hovered && this.hovered !== entity) this.hovered.unhover();
+    if (entity && !this.hovered) entity.hover();
+
+    this.hovered = entity;
+
+    if (entity && entity === this.mouseDown) {
+      entity.onDrag(coord);
+    }
   }
 }

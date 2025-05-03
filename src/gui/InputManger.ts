@@ -20,6 +20,8 @@ export interface KeyUpObserver {
   onKeyUp(event: KeyboardEvent): void;
 }
 
+export interface MouseObserver extends MouseDownObserver, MouseUpObserver, MouseMoveObserver {}
+
 class InputManager {
   private div = document.createElement('div');
   private observers = {
