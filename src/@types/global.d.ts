@@ -3,6 +3,8 @@ declare global {
     x: number;
     y: number;
   }
+
+  type CssStyle = Partial<CSSStyleDeclaration>;
 }
 
 export {};

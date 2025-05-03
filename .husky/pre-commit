@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# run type check
+yarn type-check
+
 # run eslint
 yarn lint
 
