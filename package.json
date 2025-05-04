@@ -9,10 +9,10 @@
     "preview": "vite preview",
     "lint": "eslint src",
     "type-check": "tsc --noEmit",
-    "check-all": "npm run type-check && npm run lint",
+    "test": "jest --passWithNoTests",
+    "check-all": "npm run type-check && npm run lint && npm run test",
     "format": "prettier --write src | grep -v \"unchanged\" | xargs",
     "format-verbose": "prettier --write src",
-    "test": "jest --passWithNoTests",
     "prepare": "husky"
   },
   "devDependencies": {

@@ -1,16 +1,11 @@
 #!/bin/sh
 
-# run type check
-yarn type-check
-
-# run eslint
-yarn lint
+# runs tsc --noEmit && eslint src && jest --passWithNoTests
+yarn check-all
 
 # run prettier only on staged files
 prettier $(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g') --write --ignore-unknown
 
-# run tests
-yarn test
 
 # if files changed by prettier, add them to the commit
 git update-index --again
