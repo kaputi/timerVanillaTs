@@ -18,7 +18,7 @@ interface ButtonProps {
   hoverBgColor?: string;
   borderColor?: string;
   pressedBorderColor?: string;
-  hoeverBorderColor?: string;
+  hoverBorderColor?: string;
   opacity?: number;
 }
 
@@ -39,7 +39,7 @@ export class Button extends Entity {
   public bgHoverColor: string;
   public borderColor: string;
   public pressedBorderColor: string;
-  public hoeverBorderColor: string;
+  public hoverBorderColor: string;
   public opacity: number;
 
   constructor(
@@ -60,7 +60,7 @@ export class Button extends Entity {
       hoverBgColor,
       borderColor,
       pressedBorderColor,
-      hoeverBorderColor,
+      hoverBorderColor,
       opacity,
     }: ButtonProps
   ) {
@@ -90,7 +90,7 @@ export class Button extends Entity {
     this.bgHoverColor = hoverBgColor || '#fff';
     this.borderColor = borderColor || '#000';
     this.pressedBorderColor = pressedBorderColor || '#000';
-    this.hoeverBorderColor = hoeverBorderColor || '#000';
+    this.hoverBorderColor = hoverBorderColor || '#000';
     this.opacity = opacity || 1;
   }
 
@@ -117,7 +117,7 @@ export class Button extends Entity {
     ctx.strokeStyle = this.mouseDown
       ? this.pressedBorderColor
       : this.mouseIn
-        ? this.hoeverBorderColor
+        ? this.hoverBorderColor
         : this.borderColor;
     ctx.fill();
     ctx.stroke();
